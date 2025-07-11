@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Table with Row Headers and Checkboxes</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th[scope="col"] {
+      background-color: #f4f4f4;
+      position: sticky;
+      top: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    th[scope="row"] {
+      background-color: #e6f7ff;
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      font-weight: bold;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+<h3>Interactive Table with Row Headers and Checkboxes</h3>
+
+<table id="interactiveTable">
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col" onclick="sortTable(1)">Monday</th>
+      <th scope="col" onclick="sortTable(2)">Tuesday</th>
+      <th scope="col" onclick="sortTable(3)">Wednesday</th>
+      <th scope="col">Done?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Math</th>
+      <td>8 AM</td>
+      <td>10 AM</td>
+      <td>9 AM</td>
+      <td><input type="checkbox"></td>
+    </tr>
+    <tr>
+      <th scope="row">Science</th>
+      <td>9 AM</td>
+      <td>8 AM</td>
+      <td>10 AM</td>
+      <td><input type="checkbox" checked></td>
+    </tr>
+    <tr>
+      <th scope="row">History</th>
+      <td>10 AM</td>
+      <td>9 AM</td>
+      <td>8 AM</td>
+      <td><input type="checkbox"></td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  function sortTable(colIndex) {
+    const table = document.getElementById("interactiveTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.rows);
+    let switching = true;
+
+    while (switching) {
+      switching = false;
+      for (let i = 0; i < rows.length - 1; i++) {
+        const x = rows[i].cells[colIndex - 1].innerText.toLowerCase(); // colIndex - 1 because row header is <th>
+        const y = rows[i + 1].cells[colIndex - 1].innerText.toLowerCase();
+        if (x > y) {
+          tbody.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          break;
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
