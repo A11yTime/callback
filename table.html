@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Table with Checkboxes</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+      cursor: pointer;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    td:first-child, th:first-child {
+      background-color: #e6f7ff;
+      font-weight: bold;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+<h3>Interactive Table with Row & Column Headers and Checkboxes</h3>
+
+<table id="interactiveTable">
+  <thead>
+    <tr>
+      <th></th>
+      <th onclick="sortTable(1)">Monday</th>
+      <th onclick="sortTable(2)">Tuesday</th>
+      <th onclick="sortTable(3)">Wednesday</th>
+      <th>Done?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Math</td>
+      <td>8 AM</td>
+      <td>10 AM</td>
+      <td>9 AM</td>
+      <td><input type="checkbox"></td>
+    </tr>
+    <tr>
+      <td>Science</td>
+      <td>9 AM</td>
+      <td>8 AM</td>
+      <td>10 AM</td>
+      <td><input type="checkbox" checked></td>
+    </tr>
+    <tr>
+      <td>History</td>
+      <td>10 AM</td>
+      <td>9 AM</td>
+      <td>8 AM</td>
+      <td><input type="checkbox"></td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  function sortTable(colIndex) {
+    const table = document.getElementById("interactiveTable");
+    const rows = Array.from(table.rows).slice(1); // Exclude header
+    let switching = true;
+
+    while (switching) {
+      switching = false;
+      for (let i = 1; i < rows.length - 1; i++) {
+        const x = rows[i].cells[colIndex].innerText.toLowerCase();
+        const y = rows[i + 1].cells[colIndex].innerText.toLowerCase();
+        if (x > y) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          break;
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
