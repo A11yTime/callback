@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ag-Grid Enter Key Trigger</title>
+
+  <!-- ag-Grid CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #myGrid {
+      height: 100%;
+      width: 100%;
+    }
+
+    .btn-simple {
+      padding: 6px 12px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-simple:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="myGrid" class="ag-theme-alpine"></div>
+
+  <!-- ag-Grid JS -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+
+  <script>
+    class CustomButtonComponent {
+      init(params) {
+        this.params = params;
+
+        // Parent container
+        this.eGui = document.createElement('div');
+        this.eGui.style.display = 'flex';
+        this.eGui.style.justifyContent = 'center';
+        this.eGui.style.alignItems = 'center';
+        this.eGui.style.height = '100%';
+        this.eGui.style.cursor = 'pointer';
+
+        // The button
+        this.eButton = document.createElement('button');
+        this.eButton.textContent = 'Push Me!';
+        this.eButton.className = 'btn-simple';
+        this.eButton.setAttribute('type', 'button');
+
+        // Common action
+        this.onClick = () => {
+          alert('Clicked for: ' + (params.data.make || 'Unknown'));
+        };
+
+        // Click on button or cell
+        this.eButton.addEventListener('click', this.onClick);
+        this.eGui.addEventListener('click', this.onClick);
+
+        // 👇 Keydown handler on the grid cell
+        this.keydownHandler = (e) => {
+          if (e.key === 'Enter' || e.key ===' ') {
+            e.preventDefault();
+            this.onClick();
+          }
+        };
+
+        // ✅ Attach to the grid cell (required)
+        if (params.eGridCell) {
+          params.eGridCell.addEventListener('keydown', this.keydownHandler);
+        }
+
+        this.eGui.appendChild(this.eButton);
+      }
+
+      getGui() {
+        return this.eGui;
+      }
+
+      refresh() {
+        return true;
+      }
+
+      destroy() {
+        this.eButton.removeEventListener('click', this.onClick);
+        this.eGui.removeEventListener('click', this.onClick);
+        if (this.params.eGridCell && this.keydownHandler) {
+          this.params.eGridCell.removeEventListener('keydown', this.keydownHandler);
+        }
+      }
+    }
+
+    const gridOptions = {
+      columnDefs: [
+        {
+          headerName: "Make & Model",
+          valueGetter: (params) => params.data.make + " " + params.data.model,
+          flex: 2
+        },
+        {
+          field: "price",
+          valueFormatter: (params) => "£" + Math.floor(params.value).toLocaleString(),
+          flex: 1
+        },
+        { field: "electric", flex: 1 },
+        {
+          headerName: "Action",
+          field: "button",
+          cellRenderer: "customButtonComponent",
+          flex: 1
+        }
+      ],
+      rowData: [
+        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+        { make: "Ford", model: "F-Series", price: 33850, electric: false },
+        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+        { make: "Mercedes", model: "EQA", price: 48890, electric: true },
+        { make: "Fiat", model: "500", price: 15774, electric: false },
+        { make: "Nissan", model: "Juke", price: 20675, electric: false },
+      ],
+      components: {
+        customButtonComponent: CustomButtonComponent
+      },
+      defaultColDef: {
+        resizable: true,
+        sortable: true,
+        filter: true
+      }
+    };
+
+    const gridDiv = document.querySelector("#myGrid");
+    agGrid.createGrid(gridDiv, gridOptions);
+  </script>
+</body>
+</html>

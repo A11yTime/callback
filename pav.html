@@ -76,26 +76,29 @@
 </table>
 
 <script>
-  function sortTable(colIndex) {
-    const table = document.getElementById("interactiveTable");
-    const tbody = table.tBodies[0];
-    const rows = Array.from(tbody.rows);
-    let switching = true;
-
-    while (switching) {
-      switching = false;
-      for (let i = 0; i < rows.length - 1; i++) {
-        const x = rows[i].cells[colIndex - 1].innerText.toLowerCase(); // colIndex - 1 because row header is <th>
-        const y = rows[i + 1].cells[colIndex - 1].innerText.toLowerCase();
-        if (x > y) {
-          tbody.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-          break;
+    function sortTable(colIndex) {
+      const table = document.getElementById("interactiveTable");
+      const tbody = table.tBodies[0];
+      const rows = Array.from(tbody.rows);
+  
+      let switching = true;
+  
+      while (switching) {
+        switching = false;
+        for (let i = 0; i < rows.length - 1; i++) {
+          const x = rows[i].children[colIndex].innerText.toLowerCase();
+          const y = rows[i + 1].children[colIndex].innerText.toLowerCase();
+  
+          if (x > y) {
+            tbody.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            break;
+          }
         }
       }
     }
-  }
-</script>
+  </script>
+  
 
 </body>
 </html>
